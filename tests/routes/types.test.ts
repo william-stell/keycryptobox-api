@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import app from "../../src/index";
-import crypto from "crypto";
+import * as crypto from "crypto";
 
 describe("GET /types", () => {
   it("should return supported keyTypes and hashTypes", async () => {
