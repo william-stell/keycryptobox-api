@@ -1,0 +1,6 @@
+name = "api-keycryptobox"
+main = "dist/index.js"
+compatibility_date = "2025-06-16"
+
+[build]
+command = "bun run build"

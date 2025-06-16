@@ -1,0 +1,32 @@
+{
+  "name": "keycryptobox-api",
+  "version": "0.1.0",
+  "description": "A minimal and fast REST API for cryptographic key generation, message signing, verification, and hashing using Bun and Hono.",
+  "author": "William Stell",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "start": "bun src/index.ts",
+    "dev": "bun --hot src/index.ts",
+    "test": "bun test",
+    "build": "bun build src/index.ts --outdir=dist --bundle --minify"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/william-stell/keycryptobox-api.git"
+  },
+  "bugs": {
+    "url": "https://github.com/william-stell/keycryptobox-api/issues"
+  },
+  "homepage": "https://github.com/william-stell/keycryptobox-api#readme",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "hono": "^4.7.11"
+  }
+}
