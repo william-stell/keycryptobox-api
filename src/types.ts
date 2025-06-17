@@ -1,3 +1,5 @@
+export type KeyType = "ed25519" | "secp256k1" | "secp256r1";
+
 /**
  * Represents a generated asymmetric key pair.
  */
@@ -6,7 +8,7 @@ export type KeyData = {
    * The algorithm or curve used for key generation.
    * Examples: 'secp256k1', 'ed25519', etc.
    */
-  keyType: string;
+  keyType: KeyType;
 
   /**
    * The private key as a hex-encoded string.
