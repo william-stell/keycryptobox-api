@@ -27,6 +27,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@noble/curves": "^1.9.2",
     "hono": "^4.7.11"
   }
 }
