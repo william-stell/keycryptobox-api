@@ -22,6 +22,12 @@ Built with [Bun](https://bun.sh/) and [Hono](https://hono.dev/) for performance 
 
 Retrieves the supported cryptographic key types and hash types.
 
+#### Example Request
+
+```bash
+curl localhost:3000/types
+```
+
 #### Response
 
 - **Status:** `200 OK`
