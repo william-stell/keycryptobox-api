@@ -1,6 +1,6 @@
 {
   "name": "keycryptobox-api",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A minimal and fast REST API for cryptographic key generation, message signing, verification, and hashing using Bun and Hono.",
   "author": "William Stell",
   "type": "module",
@@ -27,6 +27,7 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@noble/curves": "^1.9.2",
     "hono": "^4.7.11"
   }
 }

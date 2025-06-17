@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import app from "../../src/index";
-import crypto from "crypto";
+import * as crypto from "crypto";
 
 describe("POST /hash/:hashType", () => {
   const testCases = ["sha256", "ripemd160", "sha1"];

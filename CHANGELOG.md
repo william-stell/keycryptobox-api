@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2025-06-17
+
+### Added
+
+- `POST /key/:keyType` endpoint to compute key pair
+- Validation and error handling for unsupported key types
+- Tests for valid and invalid key type hashing
+- Update supported `keyTypes` with description
+
 ## [0.2.0] - 2025-06-16
 
 ### Added

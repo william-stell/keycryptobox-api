@@ -1,5 +1,5 @@
 import type { Context } from "hono";
-import crypto from "crypto";
+import * as crypto from "crypto";
 
 export async function hashControllerPost(c: Context): Promise<Response> {
   const hashType = c.req.param("hashType");
