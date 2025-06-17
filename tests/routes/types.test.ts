@@ -1,12 +1,13 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import app from "../../src/index";
-import * as crypto from "crypto";
+
+import { getSupportedHashTypes } from "../../src/services/hashService";
+import { getSupportedKeyTypes } from "../../src/services/keyService";
 
 describe("GET /types", () => {
   it("should return supported keyTypes and hashTypes", async () => {
-    const expectedKeyTypes = [];
-
-    const expectedHashTypes = crypto.getHashes();
+    const expectedKeyTypes = getSupportedKeyTypes();
+    const expectedHashTypes = getSupportedHashTypes();
 
     const request = new Request("http://localhost/types", {
       method: "GET",
@@ -20,7 +21,7 @@ describe("GET /types", () => {
     expect(data).toHaveProperty("keyTypes");
     expect(data).toHaveProperty("hashTypes");
 
-    // expect(data.keyTypes).toEqual(expect.arrayContaining(expectedKeyTypes));
+    expect(data.keyTypes).toEqual(expect.arrayContaining(expectedKeyTypes));
     expect(data.hashTypes).toEqual(expect.arrayContaining(expectedHashTypes));
   });
 });

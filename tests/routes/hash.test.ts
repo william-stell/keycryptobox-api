@@ -1,17 +1,16 @@
 import { describe, it, expect, beforeEach, afterEach } from "bun:test";
 import app from "../../src/index";
-import * as crypto from "crypto";
+
+import { generateHash } from "../../src/services/hashService";
+import type { HashType } from "../../src/types";
 
 describe("POST /hash/:hashType", () => {
-  const testCases = ["sha256", "ripemd160", "sha1"];
+  const testCases: HashType[] = ["sha256", "ripemd160", "sha1"];
   const message = "Hello, world!";
 
   for (const hashType of testCases) {
     it(`POST /hash/${hashType} should return correct hash`, async () => {
-      const expectedHash = crypto
-        .createHash(hashType)
-        .update(message, "utf8")
-        .digest("hex");
+      const expectedHash = generateHash(hashType, message);
 
       const request = new Request(`http://localhost/hash/${hashType}`, {
         method: "POST",
@@ -24,7 +23,7 @@ describe("POST /hash/:hashType", () => {
 
       const data = await response.json();
       expect(data).toHaveProperty("hash");
-      expect(data.hash).toBe(expectedHash);
+      expect(data.hash).toBe(expectedHash.hash);
     });
   }
 
