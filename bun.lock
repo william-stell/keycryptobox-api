@@ -5,6 +5,7 @@
       "name": "keycryptobox-api",
       "dependencies": {
         "@noble/curves": "^1.9.2",
+        "@noble/hashes": "^1.8.0",
         "hono": "^4.7.11",
       },
       "devDependencies": {

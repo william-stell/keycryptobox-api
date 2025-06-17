@@ -4,6 +4,12 @@ import { p256 } from "@noble/curves/p256";
 
 import type { KeyType } from "../types";
 
+function toHex(bytes: Uint8Array): string {
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 const keyTypesData = {
   ed25519: {
     description:
@@ -12,8 +18,8 @@ const keyTypesData = {
       const privateKeyRaw = ed25519.utils.randomPrivateKey();
       const publicKeyRaw = ed25519.getPublicKey(privateKeyRaw);
       return {
-        privateKey: Buffer.from(privateKeyRaw).toString("hex"),
-        publicKey: Buffer.from(publicKeyRaw).toString("hex"),
+        privateKey: toHex(privateKeyRaw),
+        publicKey: toHex(publicKeyRaw),
       };
     },
   },
@@ -24,8 +30,8 @@ const keyTypesData = {
       const privateKeyRaw = secp256k1.utils.randomPrivateKey();
       const publicKeyRaw = secp256k1.getPublicKey(privateKeyRaw);
       return {
-        privateKey: Buffer.from(privateKeyRaw).toString("hex"),
-        publicKey: Buffer.from(publicKeyRaw).toString("hex"),
+        privateKey: toHex(privateKeyRaw),
+        publicKey: toHex(publicKeyRaw),
       };
     },
   },
@@ -36,8 +42,8 @@ const keyTypesData = {
       const privateKeyRaw = p256.utils.randomPrivateKey();
       const publicKeyRaw = p256.getPublicKey(privateKeyRaw);
       return {
-        privateKey: Buffer.from(privateKeyRaw).toString("hex"),
-        publicKey: Buffer.from(publicKeyRaw).toString("hex"),
+        privateKey: toHex(privateKeyRaw),
+        publicKey: toHex(publicKeyRaw),
       };
     },
   },
