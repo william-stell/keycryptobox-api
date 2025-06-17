@@ -3,6 +3,7 @@ import type { KeyData } from "../types";
 
 import { ed25519 } from "@noble/curves/ed25519";
 import { secp256k1 } from "@noble/curves/secp256k1";
+import { p256 } from "@noble/curves/p256";
 
 export async function keyControllerPost(c: Context): Promise<Response> {
   const keyType = c.req.param("keyType");
@@ -23,6 +24,11 @@ export async function keyControllerPost(c: Context): Promise<Response> {
     case "secp256k1":
       privateKeyRaw = secp256k1.utils.randomPrivateKey();
       publicKeyRaw = secp256k1.getPublicKey(privateKeyRaw);
+      break;
+
+    case "secp256r1":
+      privateKeyRaw = p256.utils.randomPrivateKey();
+      publicKeyRaw = p256.getPublicKey(privateKeyRaw);
       break;
 
     default:
