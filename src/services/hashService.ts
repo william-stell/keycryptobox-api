@@ -7,7 +7,7 @@ import {
   sha512_256,
 } from "@noble/hashes/sha2.js";
 import { sha1, md5, ripemd160 } from "@noble/hashes/legacy.js";
-import { utf8ToBytes } from "@noble/hashes/utils";
+import { bytesToHex, utf8ToBytes } from "@noble/hashes/utils";
 import type { HashType } from "../types";
 
 const hashTypesData = {
@@ -18,10 +18,7 @@ const hashTypesData = {
       const input = utf8ToBytes(message);
       const hashBytes = sha256(input);
 
-      // Convert to hex:
-      const hashHex = Array.from(hashBytes)
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
+      const hashHex = bytesToHex(hashBytes);
       return {
         hash: hashHex,
       };
@@ -34,10 +31,7 @@ const hashTypesData = {
       const input = utf8ToBytes(message);
       const hashBytes = ripemd160(input);
 
-      // Convert to hex:
-      const hashHex = Array.from(hashBytes)
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
+      const hashHex = bytesToHex(hashBytes);
       return {
         hash: hashHex,
       };
@@ -50,10 +44,7 @@ const hashTypesData = {
       const input = utf8ToBytes(message);
       const hashBytes = sha1(input);
 
-      // Convert to hex:
-      const hashHex = Array.from(hashBytes)
-        .map((b) => b.toString(16).padStart(2, "0"))
-        .join("");
+      const hashHex = bytesToHex(hashBytes);
       return {
         hash: hashHex,
       };
