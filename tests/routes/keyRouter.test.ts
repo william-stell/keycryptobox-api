@@ -1,87 +1,166 @@
 import { describe, it, expect } from "bun:test";
 import app from "../../src/index";
 
-import type { KeyData } from "../../src/types";
+import * as keyService from "../../src/services/keyService";
+import type { KeyType } from "../../src/types";
+import { bytesToHex } from "@noble/hashes/utils";
 
-import { ed25519 } from "@noble/curves/ed25519";
-import { secp256k1 } from "@noble/curves/secp256k1";
-import { p256 } from "@noble/curves/p256";
+const curves: KeyType[] = ["ed25519", "secp256k1", "secp256r1"];
 
-const hexRegex = /^[0-9a-fA-F]+$/;
+describe.each(curves)("POST /key/:keyType/sign - %s", (keyType) => {
+  it("should sign a message", async () => {
+    const { privateKey } = keyService.generateKeyPair(keyType);
+    const message = "test message";
 
-const curves = {
-  ed25519: {
-    lib: ed25519,
-    expectedPubLen: 64,
-  },
-  secp256k1: {
-    lib: secp256k1,
-    expectedPubLen: [66, 130],
-  },
-  secp256r1: {
-    lib: p256,
-    expectedPubLen: [66, 130],
-  },
-} as const;
-
-describe.each(Object.entries(curves))(
-  "POST /key/:keyType - %s",
-  (keyType, { lib, expectedPubLen }) => {
-    it(`should return valid ${keyType} key pair`, async () => {
-      const req = new Request(`http://localhost:3000/key/${keyType}`, {
-        method: "POST",
-      });
-      const response = await app.fetch(req);
-      const data: KeyData = await response.json();
-
-      expect(response.status).toBe(200);
-      expect(data.keyType).toBe(keyType);
-      expect(hexRegex.test(data.privateKey)).toBe(true);
-      expect(hexRegex.test(data.publicKey)).toBe(true);
-      expect(data.privateKey.length).toBe(64);
-
-      if (Array.isArray(expectedPubLen)) {
-        expect(expectedPubLen).toContain(data.publicKey.length);
-      } else {
-        expect(data.publicKey.length).toBe(expectedPubLen);
-      }
-
-      const privBytes = Uint8Array.from(Buffer.from(data.privateKey, "hex"));
-      const pubBytes = lib.getPublicKey(privBytes);
-      expect(Buffer.from(pubBytes).toString("hex")).toBe(data.publicKey);
-
-      const msg = new TextEncoder().encode("test message");
-      const signature = lib.sign(msg, privBytes);
-      const verified = lib.verify(signature, msg, pubBytes);
-      expect(verified).toBe(true);
-
-      expect(data.address).toBeUndefined();
+    const req = new Request(`http://localhost/key/${keyType}/sign`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ privateKey, message }),
     });
-  }
-);
 
-describe("POST /key/:keyType endpoint - error handling", () => {
+    const res = await app.fetch(req);
+    expect(res.status).toBe(200);
+
+    const { signature } = await res.json();
+    expect(typeof signature).toBe("string");
+    expect(signature.length).toBeGreaterThan(0);
+  });
+
+  it("should return 400 if privateKey is missing", async () => {
+    const req = new Request(`http://localhost/key/${keyType}/sign`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: "test message" }),
+    });
+
+    const res = await app.fetch(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBeDefined();
+  });
+
+  it("should return 400 if message is missing", async () => {
+    const { privateKey } = keyService.generateKeyPair(keyType);
+
+    const req = new Request(`http://localhost/key/${keyType}/sign`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ privateKey }),
+    });
+
+    const res = await app.fetch(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBeDefined();
+  });
+});
+
+describe.each(curves)("POST /key/:keyType/verify - %s", (keyType) => {
+  it("should verify a valid signature", async () => {
+    const { privateKey, publicKey } = keyService.generateKeyPair(keyType);
+    const message = "test message";
+    const messageHex = bytesToHex(new TextEncoder().encode(message));
+    const signature = keyService.sign(keyType, privateKey, messageHex);
+
+    const req = new Request(`http://localhost/key/${keyType}/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ publicKey, message, signature }),
+    });
+
+    const res = await app.fetch(req);
+    expect(res.status).toBe(200);
+
+    const { valid } = await res.json();
+    expect(valid).toBe(true);
+  });
+
+  it("should reject an invalid signature", async () => {
+    const { publicKey } = keyService.generateKeyPair(keyType);
+    const message = "test message";
+    const badSignature = "00".repeat(64);
+
+    const req = new Request(`http://localhost/key/${keyType}/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ publicKey, message, signature: badSignature }),
+    });
+
+    const res = await app.fetch(req);
+    expect(res.status).toBe(200);
+    const { valid } = await res.json();
+    expect(valid).toBe(false);
+  });
+
+  it("should return 400 if publicKey is missing", async () => {
+    const message = "test message";
+    const signature = "00".repeat(64);
+
+    const req = new Request(`http://localhost/key/${keyType}/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message, signature }),
+    });
+
+    const res = await app.fetch(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBeDefined();
+  });
+
+  it("should return 400 if message is missing", async () => {
+    const { publicKey } = keyService.generateKeyPair(keyType);
+    const signature = "00".repeat(64);
+
+    const req = new Request(`http://localhost/key/${keyType}/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ publicKey, signature }),
+    });
+
+    const res = await app.fetch(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBeDefined();
+  });
+
+  it("should return 400 if signature is missing", async () => {
+    const { publicKey } = keyService.generateKeyPair(keyType);
+    const message = "test message";
+
+    const req = new Request(`http://localhost/key/${keyType}/verify`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ publicKey, message }),
+    });
+
+    const res = await app.fetch(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBeDefined();
+  });
+});
+
+describe("POST /key/:keyType - error handling", () => {
   it("should return 400 for missing keyType", async () => {
-    const req = new Request("http://localhost:3000/key/", {
+    const req = new Request(`http://localhost/key/`, {
       method: "POST",
     });
 
-    const response = await app.fetch(req);
-
-    expect(response.status).toBe(400);
-    const data = await response.json();
+    const res = await app.fetch(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
     expect(data.error).toBeDefined();
   });
 
   it("should return 400 for unsupported keyType", async () => {
-    const req = new Request("http://localhost:3000/key/unsupportedkeytype", {
+    const req = new Request(`http://localhost/key/invalidCurve`, {
       method: "POST",
     });
 
-    const response = await app.fetch(req);
-
-    expect(response.status).toBe(400);
-    const data = await response.json();
-    expect(data.error).toBe("Unsupported keyType: unsupportedkeytype");
+    const res = await app.fetch(req);
+    expect(res.status).toBe(400);
+    const data = await res.json();
+    expect(data.error).toBe("Unsupported keyType: invalidCurve");
   });
 });

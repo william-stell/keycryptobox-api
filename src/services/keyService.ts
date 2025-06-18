@@ -93,6 +93,7 @@ export function sign(
   if (!isSupportedKeyType(keyType)) {
     throw new Error(`Invalid keyType: ${keyType}`);
   }
+
   const privateKeyBytes: Uint8Array = hexToBytes(privateKey);
   const messageBytes: Uint8Array = hexToBytes(message);
 
