@@ -2,12 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.1.0] - 2025-06-18
+
+### Added
+- `POST /key/:keyType/sign` and `POST /key/:keyType/verify` to sign and verify
+- Update README to include the new added endpoints
+
 ## [1.0.0] - 2025-06-17
 
 ### Added
 
-    - Released stable version 1.0.0.
-    - Update README to include all API endpoints
+- Released stable version 1.0.0.
+- Update README to include all API endpoints
 
 ## [0.3.0] - 2025-06-17
 
