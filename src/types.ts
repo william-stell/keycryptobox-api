@@ -1,4 +1,9 @@
-export type KeyType = "ed25519" | "secp256k1" | "secp256r1";
+export type KeyType =
+  | "ed25519"
+  | "secp256k1"
+  | "secp256r1"
+  | "secp384r1"
+  | "secp521r1";
 
 export type KeyPair = {
   publicKey: string;

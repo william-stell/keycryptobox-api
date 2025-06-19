@@ -10,7 +10,7 @@ import {
 import type { KeyType } from "../../src/types";
 
 describe("keyTypesData module", () => {
-  const validKeyTypes: KeyType[] = ["ed25519", "secp256k1", "secp256r1"];
+  const validKeyTypes: KeyType[] = ["ed25519", "secp256k1", "secp256r1", "secp384r1", "secp521r1"];
 
   describe("isSupportedKeyType", () => {
     it("returns true for supported key types", () => {
