@@ -38,4 +38,4 @@ export type KeyData = {
   address?: string;
 };
 
-export type HashType = "sha256" | "ripemd160" | "md5" | "sha1";
+export type HashType = "sha256" | "ripemd160" | "sha1" | "keccak256";
