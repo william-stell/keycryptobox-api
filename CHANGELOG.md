@@ -2,9 +2,17 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.2.0] - 2025-06-19
+
+### Added
+
+- Key type secp384r1, and secp521r1
+- Hash type keccak256
+
 ## [1.1.0] - 2025-06-18
 
 ### Added
+
 - `POST /key/:keyType/sign` and `POST /key/:keyType/verify` to sign and verify
 - Update README to include the new added endpoints
 
