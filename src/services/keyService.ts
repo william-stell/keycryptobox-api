@@ -1,6 +1,8 @@
 import { ed25519 } from "@noble/curves/ed25519";
 import { secp256k1 } from "@noble/curves/secp256k1";
 import { p256 } from "@noble/curves/p256";
+import { secp384r1 } from "@noble/curves/p384";
+import { secp521r1 } from "@noble/curves/p521";
 
 import type { KeyType } from "../types";
 
@@ -26,6 +28,16 @@ const keyTypesData: Record<KeyType, KeyTypeData> = {
     description:
       "Most widely used NIST curve, common in TLS/SSL and government standards.",
     lib: p256,
+  },
+  secp384r1: {
+    description:
+      "Higher security level but slower; used in high-security TLS and some cryptographic applications.",
+    lib: secp384r1,
+  },
+  secp521r1: {
+    description:
+      "Highest-security NIST curve with ~256-bit strength; slower but used in government and high-security applications.",
+    lib: secp521r1,
   },
 };
 

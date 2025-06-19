@@ -1,4 +1,14 @@
-export type KeyType = "ed25519" | "secp256k1" | "secp256r1";
+export type KeyType =
+  | "ed25519"
+  | "secp256k1"
+  | "secp256r1"
+  | "secp384r1"
+  | "secp521r1";
+
+export type KeyPair = {
+  publicKey: string;
+  privateKey: string;
+};
 
 /**
  * Represents a generated asymmetric key pair.
@@ -28,4 +38,4 @@ export type KeyData = {
   address?: string;
 };
 
-export type HashType = "sha256" | "ripemd160" | "md5" | "sha1"
+export type HashType = "sha256" | "ripemd160" | "sha1" | "keccak256";

@@ -10,7 +10,13 @@ import {
 import type { KeyType } from "../../src/types";
 
 describe("keyTypesData module", () => {
-  const validKeyTypes: KeyType[] = ["ed25519", "secp256k1", "secp256r1"];
+  const validKeyTypes: KeyType[] = [
+    "ed25519",
+    "secp256k1",
+    "secp256r1",
+    "secp384r1",
+    "secp521r1",
+  ];
 
   describe("isSupportedKeyType", () => {
     it("returns true for supported key types", () => {
@@ -33,7 +39,10 @@ describe("keyTypesData module", () => {
       validKeyTypes.forEach((keyType) => {
         expect(supported).toEqual(
           expect.arrayContaining([
-            expect.objectContaining({ name: keyType, description: expect.any(String) }),
+            expect.objectContaining({
+              name: keyType,
+              description: expect.any(String),
+            }),
           ])
         );
       });
@@ -54,7 +63,9 @@ describe("keyTypesData module", () => {
     });
 
     it("throws error for unsupported key type", () => {
-      expect(() => generateKeyPair("rsa" as KeyType)).toThrow("Invalid keyType: rsa");
+      expect(() => generateKeyPair("rsa" as KeyType)).toThrow(
+        "Invalid keyType: rsa"
+      );
     });
   });
 
@@ -79,7 +90,9 @@ describe("keyTypesData module", () => {
     });
 
     it("throws error for unsupported key type in sign", () => {
-      expect(() => sign("rsa" as KeyType, "abc", messageHex)).toThrow("Invalid keyType: rsa");
+      expect(() => sign("rsa" as KeyType, "abc", messageHex)).toThrow(
+        "Invalid keyType: rsa"
+      );
     });
 
     it("throws error for unsupported key type in verify", () => {
