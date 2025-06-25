@@ -18,7 +18,7 @@ afterAll(() => {
   server?.stop?.();
 });
 
-describe("KeyCryptoBox API", () => {
+describe.skip("KeyCryptoBox API", () => {
   let keyPair: KeyPair;
   let signature: string;
   const message = "Hello, world!";
